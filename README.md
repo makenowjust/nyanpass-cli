@@ -9,6 +9,8 @@ nyanpass-cli
 
 __れんちょんに愛を込めて「にゃんぱすー」を！__
 
+![にゃんぱすー](https://raw.githubusercontent.com/MakeNowJust/nyanpass-cli/master/nyanpass.jpg)
+
 インストール方法
 ---
 
