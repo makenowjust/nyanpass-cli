@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+
+NYANPASS_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+NYANPASS_URL="http://nyanpass.com/count$[$RANDOM%1000+1]"
+
+curl $NYANPASS_URL \
+  -H 'Host: nyanpass.com' \
+  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/537.75.14' \
+  -H 'Accept: */*' \
+  -H 'Accept-Language: ja,en-us;q=0.7,en;q=0.3' \
+  --compressed \
+  -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+  -H 'x-requested-with: XMLHttpRequest' \
+  -H 'Referer: http://nyanpass.com/' \
+  -H 'Connection: keep-alive' \
+  -H 'Pragma: no-cache' \
+  -H 'Cache-Control: no-cache' \
+  --data 'ck=1' && echo
+
+mpg321 -q $NYANPASS_DIR/nyanpass.mp3
