@@ -19,13 +19,13 @@ curl "$NYANPASS_URL" \
   -H 'Cache-Control: no-cache' \
   --data 'ck=1' && echo
 
-if [[ -z "$MP3_PLAYER" ]]; then
-  for mp3_player in afplay mplayer mpg123 mpg321; do
-    if type "$mp3_player" >&/dev/null; then
-      MP3_PLAYER="$mp3_player"
+if [[ -z "$WAV_PLAYER" ]]; then
+  for wav_player in afplay aplay mplayer; do
+    if type "$wav_player" >&/dev/null; then
+      WAV_PLAYER="$wav_player"
       break
     fi
   done
 fi
 
-"$MP3_PLAYER" "$NYANPASS_DIR/nyanpass.mp3" >&/dev/null
+"$WAV_PLAYER" "$NYANPASS_DIR/nyanpass.wav" >&/dev/null
