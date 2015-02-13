@@ -28,4 +28,4 @@ if [[ -z "$WAV_PLAYER" ]]; then
   done
 fi
 
-"$WAV_PLAYER" "$NYANPASS_DIR/nyanpass.wav" >&/dev/null
+eval "$WAV_PLAYER" "'$NYANPASS_DIR/nyanpass.wav'" >&/dev/null
