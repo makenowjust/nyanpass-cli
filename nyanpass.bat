@@ -1,1 +1,1 @@
-@powershell -NoLogo %~dp0\nyanpass.ps1
+@powershell -NoLogo -ExecutionPolicy Unrestricted %~dp0\nyanpass.ps1 2>NUL
