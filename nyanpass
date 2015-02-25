@@ -2,7 +2,15 @@
 
 set -e
 
-NYANPASS_DIR="$(dirname "$(readlink -f "$0")")"
+# emulate `readlink -f` for OS X and BSD
+# see http://stackoverflow.com/questions/1055671/how-can-i-get-the-behavior-of-gnus-readlink-f-on-a-mac
+NYANPASS_CMD="$0"
+while [ -L "$NYANPASS_CMD" ]; do
+  NYANPASS_CMD="$(readlink "$NYANPASS_CMD")"
+  cd "$(dirname $NYANPASS_CMD)"
+done
+NYANPASS_DIR="$(dirname "$NYANPASS_CMD")"
+
 NYANPASS_URL="http://nyanpass.com/count$[$RANDOM%1000+1]"
 
 curl "$NYANPASS_URL" \
