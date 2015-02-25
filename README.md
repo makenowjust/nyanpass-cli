@@ -1,4 +1,4 @@
-nyanpass-cli
+nyanpass-cli (๑¯Δ¯๑)
 ===
 
 [にゃんぱすーボタン]のコマンドラインツールです。
@@ -32,10 +32,11 @@ $ git clone https://github.com/MakeNowJust/nyanpass-cli
 $ cd nyanpass-cli
 ```
 
-お好みでシンボリックリンクを貼っても動きます。
+お好みでシンボリックリンクを貼るとか`PATH`を通すとかしてください。
 
 ```console
 $ ln -s $PWD/nyanpass ~/bin/nyanpass
+$ export PATH="$PWD:$PATH"
 ```
 
 
