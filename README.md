@@ -23,9 +23,11 @@ $ sudo apt-get install curl alsa-utils
 ```
 
 他のディストロは知りませんが、これらのコマンドにパスが通っていれば動くはずです。  
-Windowsは`cmd.exe`と戦う気力がない。
 
-あとは`git clone`してください。
+<del>Windowsは`cmd.exe`と戦う気力がない。</del>  
+PowerShellの力でできました！
+
+あとは`git clone`して、`PATH`を通すなりしてください。
 
 ```console
 $ git clone https://github.com/MakeNowJust/nyanpass-cli
@@ -49,7 +51,7 @@ $ nyanpass
 
 オプションなんて物はなかった。
 
-環境変数`$WAV_PLAYER`を設定しておくと、それを使って「にゃんぱすー」と挨拶します。
+環境変数`$WAV_PLAYER`を設定しておくと、それを使って「にゃんぱすー」と挨拶します。（Windowsは除く）
 
 
 ライセンス
