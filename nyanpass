@@ -2,14 +2,8 @@
 
 set -e
 
-# emulate `readlink -f` for OS X and BSD
-# see http://stackoverflow.com/questions/1055671/how-can-i-get-the-behavior-of-gnus-readlink-f-on-a-mac
-NYANPASS_CMD="$0"
-while [ -L "$NYANPASS_CMD" ]; do
-  NYANPASS_CMD="$(readlink -- "$NYANPASS_CMD")"
-  cd "$(dirname -- $NYANPASS_CMD)"
-done
-NYANPASS_DIR="$(dirname -- "$NYANPASS_CMD")"
+# the version of nyanpass command
+NYANPASS_VERSION="1.0.0"
 
 # nyanpass.com API's entry point
 NYANPASS_URL_BASE="http://nyanpass.com/"
@@ -18,28 +12,135 @@ NYANPASS_URL_BASE="http://nyanpass.com/"
 NYANPASS_URL_ADD="${NYANPASS_URL_BASE}/add.php"
 NYANPASS_URL_GET="${NYANPASS_URL_BASE}/get?$(printf "0%s" $(echo "scale = 10; $RANDOM / 32767" | bc))"
 
+
+# get a nyanpass directory over symbolic link.
+nyanpass_dir() {
+  local nyanpass_cmd="$1"
+
+  # emulate `readlink -f` for OS X and BSD
+  # see http://stackoverflow.com/questions/1055671/how-can-i-get-the-behavior-of-gnus-readlink-f-on-a-mac
+  while [ -L "$nyanpass_cmd" ]; do
+    nyanpass_cmd="$(readlink -- "$nyanpass_cmd")"
+    cd "$(dirname -- $nyanpass_cmd)"
+  done
+
+  echo "$(dirname -- "$nyanpass_cmd")"
+}
+
 # request to add nyanpass
-curl "$NYANPASS_URL_ADD" \
-  -A 'Mozilla/5.0' \
-  --data 'nyan=pass' \
-  --compressed >& /dev/null
+nyanpass_add() {
+  curl "$NYANPASS_URL_ADD" \
+    -A 'Mozilla/5.0' \
+    --data 'nyan=pass' \
+    --compressed >& /dev/null
+}
 
 # request to get nyanpass
-curl "$NYANPASS_URL_GET" \
-  -A 'Mozilla/5.0' \
-  --data 'nyan=pass' \
-  --compressed 2>/dev/null |
-sed -e 's/^{"cnt":"/(๑¯Δ¯๑) ＜ /;s/"}$/ nyanpass/' && echo
+nyanpass_get() {
+  local nyanpass_pre="(๑¯Δ¯๑) ＜ "
+  local nyanpass_post=" にゃんぱすー"
+  if [[ -n "$NYANPASS_SILENT" ]]; then
+    nyanpass_pre=""
+    nyanpass_post=""
+  fi
 
-# choose wav player
-if [[ -z "$WAV_PLAYER" ]]; then
-  for wav_player in afplay aplay mplayer; do
-    if type "$wav_player" >&/dev/null; then
-      WAV_PLAYER="$wav_player"
-      break
-    fi
-  done
-fi
+  curl "$NYANPASS_URL_GET" \
+    -A 'Mozilla/5.0' \
+    --data 'nyan=pass' \
+    --compressed 2>/dev/null |
+  sed -e 's/^{"cnt":"/'"$nyanpass_pre"'/;s/"}$/'"$nyanpass_post"'/' && echo
+}
+
+# choose a wav file player
+wav_player() {
+  local WAV_PLAYER="$WAV_PLAYER"
+  local wav_player
+
+  if [[ -z "$WAV_PLAYER" ]]; then
+    for wav_player in afplay aplay mplayer; do
+      if type "$wav_player" >&/dev/null; then
+        WAV_PLAYER="$wav_player"
+        break
+      fi
+    done
+  fi
+
+  echo "${WAV_PLAYER:-nyanpass_wav_player_missing}"
+}
+
+nyanpass_wav_player_missing() {
+  echo "(๑¯Δ¯๑) ＜ wavを再生できるコマンドが見つからなかったのん" >&2
+  echo "(๑¯Δ¯๑) ＜ 何かインストールしてほしいのんな" >&2
+}
 
 # play nyanpass.wav
-eval "'$WAV_PLAYER'" "'$NYANPASS_DIR/nyanpass.wav'" >&/dev/null
+nyanpass_play() {
+  eval "'$(wav_player)'" "'$(nyanpass_dir)/nyanpass.wav'" >&/dev/null
+}
+
+
+# entry point of nyanpass command
+nyanpass_main() {
+  local a
+
+  for a in "$@"; do
+    case $a in
+      -s | --silent)
+        NYANPASS_SILENT=yes;;
+      -R | --no-request)
+        NYANPASS_NO_REQUEST=yes;;
+      -g | --get)
+        NYANPASS_GET=yes;;
+      -P | --no-play)
+        NYANPASS_NO_PLAY=yes;;
+      -h | --help)
+        nyanpass_help;;
+      -v | --version)
+        nyanpass_version;;
+      *)
+        echo "(๑¯Δ¯๑) ＜ 無効な引数なのん: $a" >&2
+        exit 1
+    esac
+  done
+
+  [[ -z "$NYANPASS_PLAY" ]] && nyanpass_play
+
+  if [[ -z "$NYANPASS_NO_REQUEST" ]]; then
+    [[ -z "$NYANPASS_GET" ]] && nyanpass_add
+    nyanpass_get
+  fi
+}
+
+# nyanpass --help
+nyanpass_help() {
+  echo "nyanpass"
+  echo "  nyanpass.comの非公式コマンドラインツール"
+  echo "  実行すると、nyanpass.comのカウンタを回してきます"
+  echo ""
+  echo "オプション"
+  echo "  -s, --silent     出力の内容をなるべく少なくします"
+  echo "  -R, --no-request nyanpass.comにHTTPリクエストしません"
+  echo "  -g, --get        カウンタの数値のみ取得して、カウンタを増やさないようにします"
+  echo "  -P, --no-play    音声を再生しません"
+  echo "  -v, --version    バージョンを出力して終了します"
+  echo "  -h, --help       この文章を出力して終了します"
+  echo ""
+  echo "バージョン"
+  echo "  $NYANPASS_VERSION"
+  exit 0
+}
+
+# nyanpass --version
+nyanpass_version() {
+  local nyanpass_pre="(๑¯Δ¯๑) ＜ バージョンは "
+  local nyanpass_post=" なのん"
+  if [[ -n "$NYANPASS_SILENT" ]]; then
+    nyanpass_pre=""
+    nyanpass_post=""
+  fi
+
+  echo "$nyanpass_pre$NYANPASS_VERSION$nyanpass_post"
+  exit 0
+}
+
+nyanpass_main "$@"
