@@ -11,13 +11,27 @@ while [ -L "$NYANPASS_CMD" ]; do
 done
 NYANPASS_DIR="$(dirname -- "$NYANPASS_CMD")"
 
-NYANPASS_URL="http://nyanpass.com/count$[$RANDOM%1000+1]"
+# nyanpass.com API's entry point
+NYANPASS_URL_BASE="http://nyanpass.com/"
 
-curl "$NYANPASS_URL" \
+# API end points
+NYANPASS_URL_ADD="${NYANPASS_URL_BASE}/add.php"
+NYANPASS_URL_GET="${NYANPASS_URL_BASE}/get?$[$RANDOM%1000+1]"
+
+# request to add nyanpass
+curl "$NYANPASS_URL_ADD" \
   -A 'Mozilla/5.0' \
-  --data 'ck=1' \
-  --compressed && echo
+  --data 'nyan=pass' \
+  --compressed >& /dev/null
 
+# request to get nyanpass
+curl "$NYANPASS_URL_GET" \
+  -A 'Mozilla/5.0' \
+  --data 'nyan=pass' \
+  --compressed 2>/dev/null |
+sed -e 's/^{"cnt":"//;s/"}$//' && echo
+
+# choose wav player
 if [[ -z "$WAV_PLAYER" ]]; then
   for wav_player in afplay aplay mplayer; do
     if type "$wav_player" >&/dev/null; then
@@ -27,4 +41,5 @@ if [[ -z "$WAV_PLAYER" ]]; then
   done
 fi
 
+# play nyanpass.wav
 eval "'$WAV_PLAYER'" "'$NYANPASS_DIR/nyanpass.wav'" >&/dev/null
