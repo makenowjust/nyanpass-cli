@@ -16,7 +16,7 @@ NYANPASS_URL_BASE="http://nyanpass.com/"
 
 # API end points
 NYANPASS_URL_ADD="${NYANPASS_URL_BASE}/add.php"
-NYANPASS_URL_GET="${NYANPASS_URL_BASE}/get?$[$RANDOM%1000+1]"
+NYANPASS_URL_GET="${NYANPASS_URL_BASE}/get?$(printf "0%s" $(echo "scale = 10; $RANDOM / 32767" | bc))"
 
 # request to add nyanpass
 curl "$NYANPASS_URL_ADD" \
@@ -29,7 +29,7 @@ curl "$NYANPASS_URL_GET" \
   -A 'Mozilla/5.0' \
   --data 'nyan=pass' \
   --compressed 2>/dev/null |
-sed -e 's/^{"cnt":"//;s/"}$//' && echo
+sed -e 's/^{"cnt":"/(๑¯Δ¯๑) ＜ /;s/"}$/ nyanpass/' && echo
 
 # choose wav player
 if [[ -z "$WAV_PLAYER" ]]; then
