@@ -10,12 +10,6 @@ fi
 # the version of nyanpass command
 NYANPASS_VERSION="1.0.0"
 
-# nyanpass.com API's entry point
-NYANPASS_URL_BASE="http://nyanpass.com/"
-
-# API end points
-NYANPASS_URL_ADD="${NYANPASS_URL_BASE}/add.php"
-NYANPASS_URL_GET="${NYANPASS_URL_BASE}/get?$(printf "0%s" $(echo "scale = 10; $RANDOM / 32767" | bc))"
 
 
 # get a nyanpass directory over symbolic link.
@@ -80,7 +74,7 @@ nyanpass_wav_player_missing() {
 
 # play nyanpass.wav
 nyanpass_play() {
-  eval "'$(wav_player)'" "'$(nyanpass_dir)/nyanpass.wav'" >&/dev/null
+  eval "'$(wav_player)'" "'$NYANPASS_DIR/nyanpass.wav'" >&/dev/null
 }
 
 
@@ -147,5 +141,15 @@ nyanpass_version() {
   echo "$nyanpass_pre$NYANPASS_VERSION$nyanpass_post"
   exit 0
 }
+
+# nyanpass.com API's entry point
+NYANPASS_URL_BASE="http://nyanpass.com/"
+
+# API end points
+NYANPASS_URL_ADD="${NYANPASS_URL_BASE}/add.php"
+NYANPASS_URL_GET="${NYANPASS_URL_BASE}/get?$(printf "0%s" $(echo "scale = 10; $RANDOM / 32767" | bc))"
+
+# resolve a nyanpass directory
+NYANPASS_DIR=$(nyanpass_dir $0)
 
 nyanpass_main "$@"
