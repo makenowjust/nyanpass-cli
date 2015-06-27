@@ -1,8 +1,11 @@
 #!/bin/bash
 
 set -e
-# if $NYANPASS_DEBUG is set, nyanpass command run with executation logs.
-[[ -n "$NYANPASS_DEBUG" ]] && set -x
+# if $NYANPASS_DEBUG is set, nyanpass command run with trace logs.
+if [[ -n "$NYANPASS_DEBUG" ]]; then
+  PS4='+(๑¯Δ¯๑)(${BASH_SOURCE}:${LINENO}${FUNCNAME:+:$FUNCNAME})$ '
+  set -x
+fi
 
 # the version of nyanpass command
 NYANPASS_VERSION="1.0.0"
