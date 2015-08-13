@@ -101,7 +101,7 @@ nyanpass_main() {
     esac
   done
 
-  [[ -z "$NYANPASS_PLAY" ]] && nyanpass_play
+  [[ -z "$NYANPASS_NO_PLAY" ]] && nyanpass_play
 
   if [[ -z "$NYANPASS_NO_REQUEST" ]]; then
     [[ -z "$NYANPASS_GET" ]] && nyanpass_add
