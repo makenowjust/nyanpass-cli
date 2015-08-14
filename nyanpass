@@ -87,8 +87,8 @@ nyanpass_main() {
         NYANPASS_SILENT=yes;;
       -R | --no-request)
         NYANPASS_NO_REQUEST=yes;;
-      -g | --get)
-        NYANPASS_GET=yes;;
+      -g | --get-only)
+        NYANPASS_GET_ONLY=yes;;
       -P | --no-play)
         NYANPASS_NO_PLAY=yes;;
       -h | --help)
@@ -104,7 +104,7 @@ nyanpass_main() {
   [[ -z "$NYANPASS_NO_PLAY" ]] && nyanpass_play
 
   if [[ -z "$NYANPASS_NO_REQUEST" ]]; then
-    [[ -z "$NYANPASS_GET" ]] && nyanpass_add
+    [[ -z "$NYANPASS_GET_ONLY" ]] && nyanpass_add
     nyanpass_get
   fi
 }
@@ -118,7 +118,7 @@ nyanpass_help() {
   echo "オプション"
   echo "  -s, --silent     出力の内容をなるべく少なくします"
   echo "  -R, --no-request nyanpass.comにHTTPリクエストしません"
-  echo "  -g, --get        カウンタの数値のみ取得して、カウンタを増やさないようにします"
+  echo "  -g, --get-only   カウンタの数値のみ取得して、カウンタを増やさないようにします"
   echo "  -P, --no-play    音声を再生しません"
   echo "  -v, --version    バージョンを出力して終了します"
   echo "  -h, --help       この文章を出力して終了します"
