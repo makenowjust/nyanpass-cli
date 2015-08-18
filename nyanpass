@@ -142,13 +142,16 @@ nyanpass_version() {
 }
 
 # nyanpass.com API's entry point
-NYANPASS_URL_BASE="http://nyanpass.com/"
+: ${NYANPASS_URL_BASE:="http://nyanpass.com/"}
 
 # API end points
-NYANPASS_URL_ADD="${NYANPASS_URL_BASE}/add.php"
-NYANPASS_URL_GET="${NYANPASS_URL_BASE}/get?$(printf "0%s" $(echo "scale = 10; $RANDOM / 32767" | bc))"
+: ${NYANPASS_URL_ADD_PATH:="/add.php"}
+: ${NYANPASS_URL_GET_PATH:="/get"}
+
+: ${NYANPASS_URL_ADD:="${NYANPASS_URL_BASE}${NYANPASS_URL_ADD_PATH}"}
+: ${NYANPASS_URL_GET:="${NYANPASS_URL_BASE}${NYANPASS_URL_GET_PATH}?$(printf "0%s" $(echo "scale = 10; $RANDOM / 32767" | bc))"}
 
 # resolve a nyanpass directory
-NYANPASS_DIR=$(nyanpass_dir $0)
+: ${NYANPASS_DIR:=$(nyanpass_dir $0)}
 
 nyanpass_main "$@"
