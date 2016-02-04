@@ -79,26 +79,53 @@ nyanpass_play() {
 
 # entry point of nyanpass command
 nyanpass_main() {
-  local a
+  local c
 
-  for a in "$@"; do
-    case $a in
-      -s | --silent)
-        NYANPASS_SILENT=yes;;
-      -R | --no-request)
-        NYANPASS_NO_REQUEST=yes;;
-      -g | --get-only)
-        NYANPASS_GET_ONLY=yes;;
-      -P | --no-play)
-        NYANPASS_NO_PLAY=yes;;
-      -h | --help)
-        nyanpass_help;;
-      -v | --version)
-        nyanpass_version;;
+  while (( $# > 0 )); do
+    case $1 in
+      --*)
+        case $1 in
+          --silent)
+            NYANPASS_SILENT=yes;;
+          --no-request)
+            NYANPASS_NO_REQUEST=yes;;
+          --get-only)
+            NYANPASS_GET_ONLY=yes;;
+          --no-play)
+            NYANPASS_NO_PLAY=yes;;
+          --help)
+            nyanpass_help;;
+          --version)
+            nyanpass_version;;
+          -*)
+            echo "(๑¯Δ¯๑) ＜ 無効な引数なのん: $a" >&2
+            exit 1
+        esac;;
+      -*)
+        for c in $(echo $1 | sed 's/^-//g;s/./\0\n/g'); do
+          case $c in
+            s)
+              NYANPASS_SILENT=yes;;
+            R)
+              NYANPASS_NO_REQUEST=yes;;
+            g)
+              NYANPASS_GET_ONLY=yes;;
+            P)
+              NYANPASS_NO_PLAY=yes;;
+            h)
+              nyanpass_help;;
+            v)
+              nyanpass_version;;
+            *)
+              echo "(๑¯Δ¯๑) ＜ 無効な引数なのん: $a" >&2
+              exit 1
+          esac
+        done;;
       *)
         echo "(๑¯Δ¯๑) ＜ 無効な引数なのん: $a" >&2
         exit 1
     esac
+    shift
   done
 
   [[ -z "$NYANPASS_NO_PLAY" ]] && nyanpass_play
