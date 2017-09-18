@@ -43,7 +43,7 @@ nyanpass_get() {
   fi
 
   curl "$NYANPASS_URL_GET" \
-    -A 'Mozilla/5.0' \
+    -A "Mozilla/5.0 MakeNowJust/nyanpass-cli/$NYANPASS_VERSION" \
     --data 'nyan=pass' \
     --compressed 2>/dev/null |
   sed -e 's/^{"cnt":"/'"$nyanpass_pre"'/;s/"}$/'"$nyanpass_post"'/' && echo
